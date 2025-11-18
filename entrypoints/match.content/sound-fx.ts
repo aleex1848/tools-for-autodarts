@@ -621,6 +621,7 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
   // const currentPlayerIndex = gameData.match.player;
   const isLastThrow: boolean = gameData.match.turns[0].throws.length >= 3;
   const throwName: string = currentThrow.segment.name; // S1
+  const throwBed: string = currentThrow.segment.bed;
   const winner: boolean = gameData.match.gameWinner >= 0; // use this for ambient_gameshot_match later || (gameData.match.variant === "X01" && gameData.match.gameScores[currentPlayerIndex] === 0);
   const winnerMatch: boolean = gameData.match.winner >= 0;
   const busted: boolean = gameData.match.turns[0].busted;
@@ -717,11 +718,41 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
     } else if (busted) {
       playSound("ambient_busted");
     } else if (isLastThrow) {
-      playSound(`ambient_${throwName.toLowerCase()}`);
+      // Special case: if throwName is "25" and throwBed is "Single", check for "ambient_s25" first
+      if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+        const hasS25Sound = config.soundFx.sounds?.some(sound =>
+          sound.enabled && sound.triggers && (
+            sound.triggers.includes("ambient_s25")
+            || sound.triggers.includes("s25")
+          ),
+        );
+        if (hasS25Sound) {
+          playSound("ambient_s25");
+        } else {
+          playSound(`ambient_${throwName.toLowerCase()}`);
+        }
+      } else {
+        playSound(`ambient_${throwName.toLowerCase()}`);
+      }
       playSound(`ambient_${points}`);
       playSound(`ambient_${combinedThrows}`);
     } else {
-      playSound(`ambient_${throwName.toLowerCase()}`);
+      // Special case: if throwName is "25" and throwBed is "Single", check for "ambient_s25" first
+      if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+        const hasS25Sound = config.soundFx.sounds?.some(sound =>
+          sound.enabled && sound.triggers && (
+            sound.triggers.includes("ambient_s25")
+            || sound.triggers.includes("s25")
+          ),
+        );
+        if (hasS25Sound) {
+          playSound("ambient_s25");
+        } else {
+          playSound(`ambient_${throwName.toLowerCase()}`);
+        }
+      } else {
+        playSound(`ambient_${throwName.toLowerCase()}`);
+      }
     }
   } else {
     // For Cricket, handle winner and busted sounds (not the individual throws which are handled above)
@@ -757,7 +788,22 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
     } else if (busted) {
       playSound("ambient_busted");
     } else {
-      playSound(`ambient_${throwName.toLowerCase()}`);
+      // Special case: if throwName is "25" and throwBed is "Single", check for "ambient_s25" first
+      if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+        const hasS25Sound = config.soundFx.sounds?.some(sound =>
+          sound.enabled && sound.triggers && (
+            sound.triggers.includes("ambient_s25")
+            || sound.triggers.includes("s25")
+          ),
+        );
+        if (hasS25Sound) {
+          playSound("ambient_s25");
+        } else {
+          playSound(`ambient_${throwName.toLowerCase()}`);
+        }
+      } else {
+        playSound(`ambient_${throwName.toLowerCase()}`);
+      }
     }
   }
 }
