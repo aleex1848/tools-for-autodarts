@@ -486,6 +486,7 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
   // const currentPlayerIndex = gameData.match.player;
   const isLastThrow: boolean = gameData.match.turns[0].throws.length >= 3;
   const throwName: string = currentThrow.segment.name; // S1
+  const throwBed: string = currentThrow.segment.bed;
   const winner: boolean = gameData.match.gameWinner >= 0; // use this for matchshot later || (gameData.match.variant === "X01" && gameData.match.gameScores[currentPlayerIndex] === 0);
   const winnerMatch: boolean = gameData.match.winner >= 0;
   const busted: boolean = gameData.match.turns[0].busted;
@@ -513,12 +514,40 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
     } else if (busted) {
       playSound("busted");
     } else if (isLastThrow) {
-      if (config.caller.callEveryDart) playSound(throwName.toLowerCase());
+      if (config.caller.callEveryDart) {
+        // Special case: if throwName is "25" and throwBed is "Single", check for "s25" first
+        if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+          const hasS25Sound = config.caller.sounds?.some(sound =>
+            sound.enabled && sound.triggers && sound.triggers.includes("s25"),
+          );
+          if (hasS25Sound) {
+            playSound("s25");
+          } else {
+            playSound(throwName.toLowerCase());
+          }
+        } else {
+          playSound(throwName.toLowerCase());
+        }
+      }
       // Only play points sound if there's more than one player
       playSound(points.toString());
       playSound(combinedThrows);
     } else {
-      if (config.caller.callEveryDart) playSound(throwName.toLowerCase());
+      if (config.caller.callEveryDart) {
+        // Special case: if throwName is "25" and throwBed is "Single", check for "s25" first
+        if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+          const hasS25Sound = config.caller.sounds?.some(sound =>
+            sound.enabled && sound.triggers && sound.triggers.includes("s25"),
+          );
+          if (hasS25Sound) {
+            playSound("s25");
+          } else {
+            playSound(throwName.toLowerCase());
+          }
+        } else {
+          playSound(throwName.toLowerCase());
+        }
+      }
     }
   } else {
     // For Cricket, handle only winner and busted sounds (not the individual throws)
@@ -540,11 +569,39 @@ async function processGameData(gameData: IGameData, oldGameData: IGameData, from
     } else if (busted) {
       playSound("busted");
     } else if (gameData.match.players && gameData.match.players.length > 1 && isLastThrow) {
-      if (config.caller.callEveryDart) playSound(throwName.toLowerCase());
+      if (config.caller.callEveryDart) {
+        // Special case: if throwName is "25" and throwBed is "Single", check for "s25" first
+        if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+          const hasS25Sound = config.caller.sounds?.some(sound =>
+            sound.enabled && sound.triggers && sound.triggers.includes("s25"),
+          );
+          if (hasS25Sound) {
+            playSound("s25");
+          } else {
+            playSound(throwName.toLowerCase());
+          }
+        } else {
+          playSound(throwName.toLowerCase());
+        }
+      }
       if (score !== lastScore) playSound(score.toString());
       lastScore = score;
     } else {
-      if (config.caller.callEveryDart) playSound(throwName.toLowerCase());
+      if (config.caller.callEveryDart) {
+        // Special case: if throwName is "25" and throwBed is "Single", check for "s25" first
+        if (throwName.toLowerCase() === "25" && throwBed === "Single") {
+          const hasS25Sound = config.caller.sounds?.some(sound =>
+            sound.enabled && sound.triggers && sound.triggers.includes("s25"),
+          );
+          if (hasS25Sound) {
+            playSound("s25");
+          } else {
+            playSound(throwName.toLowerCase());
+          }
+        } else {
+          playSound(throwName.toLowerCase());
+        }
+      }
     }
   }
 }

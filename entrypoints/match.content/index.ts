@@ -100,9 +100,12 @@ export default defineContentScript({
           if (!gameDataWatcher) {
             gameDataWatcher = AutodartsToolsGameData.watch(async (value, oldValue) => {
               if (oldValue?.match?.variant === "Bull-off" && value?.match?.variant !== "Bull-off") {
+                // Get current URL and matchId instead of using closure values
+                const currentUrl = window.location.href;
+                const currentMatchId = value?.match?.id || currentUrl.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/)?.[0];
                 clearMatch(true);
                 await new Promise(resolve => setTimeout(resolve, 2000));
-                return initMatch(ctx, url, matchId);
+                return initMatch(ctx, currentUrl, currentMatchId);
               }
             });
           }
@@ -110,6 +113,8 @@ export default defineContentScript({
           console.log("Autodarts Tools: No Active Match found, waiting for match to start");
         }
 
+        // Disconnect existing observer before creating a new one
+        activeMatchObserver?.disconnect();
         activeMatchObserver = startActiveMatchObserver(ctx);
       } else {
         clearMatch();
@@ -220,7 +225,15 @@ async function initMatch(ctx, url: string, matchId?: string) {
 function clearMatch(fromBullOff: boolean = false) {
   console.log("Autodarts Tools: Clearing match");
 
-  if (!window.location.href.includes("boards")) activeMatchObserver?.disconnect();
+  // Always disconnect the observer when clearing
+  activeMatchObserver?.disconnect();
+  activeMatchObserver = null;
+
+  // Clean up gameDataWatcher
+  if (gameDataWatcher) {
+    gameDataWatcher();
+    gameDataWatcher = null;
+  }
 
   tools.streamingMode?.remove();
   tools.takeout?.remove();
@@ -252,7 +265,8 @@ function startActiveMatchObserver(ctx) {
   const targetNode = document.querySelector("#root > div > div:nth-of-type(2)");
   const observer = new MutationObserver(async () => {
     const url = window.location.href;
-    if (!(/\/(matches|boards)\/([0-9a-f-]+)/.test(url))) return;
+    // Check for match/board URL pattern and exclude history pages
+    if (!(/\/(matches|boards)\/([0-9a-f-]+)/.test(url)) || url.includes("history")) return;
 
     // Check if the "Board has no active match" element no longer exists
     const activeMatch = window.location.href.includes("boards") ? !(await waitForElementWithTextContent("h2", [ "Board has no active match", "Board hat kein aktives Spiel", "Bord heeft geen actieve wedstrijd" ], 1000).catch(() => undefined)) : true;
