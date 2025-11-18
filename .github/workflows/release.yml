@@ -135,8 +135,26 @@ jobs:
       - name: Build and Archive iOS App
         run: |
           cd "Tools for Autodarts"
-          # Build the archive with the correct scheme
-          xcodebuild -project "Tools for Autodarts.xcodeproj" -scheme "Tools for Autodarts (iOS)" -configuration Release -archivePath "./build/ToolsForAutodarts.xcarchive" archive CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
+          # Build the archive with verbose output for debugging
+          set -o pipefail
+          xcodebuild \
+            -project "Tools for Autodarts.xcodeproj" \
+            -scheme "Tools for Autodarts (iOS)" \
+            -configuration Release \
+            -archivePath "./build/ToolsForAutodarts.xcarchive" \
+            -sdk iphoneos \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            archive \
+            2>&1 | tee xcodebuild.log || {
+              echo "Build failed. Showing last 100 lines of build log:"
+              tail -100 xcodebuild.log
+              echo ""
+              echo "Searching for errors:"
+              grep -i "error:" xcodebuild.log | tail -20 || true
+              exit 1
+            }
           
           # Verify the archive was created
           ls -la ./build/ToolsForAutodarts.xcarchive/Products/Applications/
