@@ -30,6 +30,8 @@ export default defineConfig({
       "*://autodarts.x10.mx/*",
       "*://adt-socket.tobias-thiele.de/*",
       "*://discord.com/api/webhooks/*",
+      "*://*.localhost.test/api/*",
+      "https://ads.aleex.de/api/*"
     ],
     permissions: [
       "storage",

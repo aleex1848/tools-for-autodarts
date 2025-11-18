@@ -123,6 +123,15 @@ export interface IConfig {
     enabled: boolean;
     sounds: ISound[];
   };
+  webhooks: {
+    enabled: boolean;
+    url: string;
+    token: string;
+    payloadTypes: {
+      match: boolean;
+      throws: boolean;
+    };
+  };
   zoom: {
     enabled: boolean;
     position: "bottom-right" | "bottom-left" | "center";
@@ -653,6 +662,15 @@ export const defaultConfig: IConfig = {
         triggers: [ "cricket_hit" ],
       },
     ],
+  },
+  webhooks: {
+    enabled: false,
+    url: "",
+    token: "",
+    payloadTypes: {
+      match: true,
+      throws: true,
+    },
   },
   wledFx: {
     enabled: false,
