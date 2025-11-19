@@ -111,6 +111,7 @@ The Caller feature provides voice announcements during your darts gameplay, simi
 - **Call Every Dart**: Announces each dart as it's thrown, rather than waiting for the end of a turn
 - **Call Checkout**: Announces possible checkout combinations when a player is on a checkout score
 - **Custom Sound Library**: Add, edit, and organize voice clips for different game events
+- **Bulk Upload with Trigger Assignment**: When uploading multiple files, you can assign the same trigger to all files at once, making it easy to set up larger sound sets without manually assigning triggers to each file individually
 
 #### Supported Triggers
 You can assign sounds to be played based on these triggers:
@@ -268,6 +269,11 @@ The Sound FX feature includes a sophisticated multi-level fallback system:
   - Generic gameshot: `ambient_gameshot`
 - If no match is found after all fallback attempts, no sound is played
 
+#### Bulk Upload with Trigger Assignment
+- **Multi-File Upload**: Upload multiple sound files at once for faster setup
+- **Bulk Trigger Assignment**: When "Generate triggers from filenames" is disabled, you can assign the same trigger to all uploaded files at once
+- **Efficient Setup**: Makes it easy to set up larger sound sets without manually assigning triggers to each file individually
+
 #### Technical Features
 - **Queue Management**: Enhanced sound queue management to prevent overlapping and ensure proper playback order (improved in v2.0.3)
 - **Format Support**: Plays both URL-based sounds and base64-encoded audio
@@ -391,6 +397,7 @@ The Animations feature allows you to display custom GIF animations for special e
 - **Delay**: Set how long to wait before showing the animation (in seconds)
 - **Duration**: Set how long the animation should display (in seconds)
 - **Object Fit**: Choose between 'cover' (fill screen) or 'contain' (maintain aspect ratio)
+- **Bulk Upload with Trigger Assignment**: When uploading multiple GIF files, you can assign the same trigger to all files at once when "Generate triggers from filenames" is disabled, making it easy to set up larger animation sets
 
 #### Supported Triggers
 Animations can be triggered by various game events using these tags:
