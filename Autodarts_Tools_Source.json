@@ -21,6 +21,15 @@
       "screenshots": [],
       "versions": [
         {
+          "version": "2.1.23",
+          "date": "2025-11-19T07:29:53.328Z",
+          "localizedDescription": null,
+          "downloadURL": "https://github.com/creazy231/tools-for-autodarts/releases/latest/download/autodarts-tools-ios.ipa",
+          "size": 31287768,
+          "buildVersion": "2.1.23",
+          "minOSVersion": "15.6"
+        },
+        {
           "version": "2.1.22",
           "date": "2025-11-19T06:32:26.558Z",
           "localizedDescription": null,
@@ -55,15 +64,6 @@
           "size": 31285470,
           "buildVersion": "2.1.19",
           "minOSVersion": "15.6"
-        },
-        {
-          "version": "2.1.18",
-          "date": "2025-07-04T10:11:00.160Z",
-          "localizedDescription": null,
-          "downloadURL": "https://github.com/creazy231/tools-for-autodarts/releases/latest/download/autodarts-tools-ios.ipa",
-          "size": 31284990,
-          "buildVersion": "2.1.18",
-          "minOSVersion": "15.6"
         }
       ],
       "appPermissions": {
@@ -73,6 +73,16 @@
     }
   ],
   "news": [
+    {
+      "title": "Tools for Autodarts 2.1.23 Available!",
+      "identifier": "news_2_1_23_1763537393328",
+      "caption": "Version 2.1.23 is now available with new features and improvements.",
+      "date": "2025-11-19T07:29:53.328Z",
+      "tintColor": "#6156e2",
+      "notify": true,
+      "url": "https://github.com/creazy231/tools-for-autodarts",
+      "appID": "com.boltapi.autodarts-tools"
+    },
     {
       "title": "Tools for Autodarts 2.1.22 Available!",
       "identifier": "news_2_1_22_1763530742241",
