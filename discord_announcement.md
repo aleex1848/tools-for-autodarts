@@ -1,14 +1,21 @@
-# :dart: Tools for Autodarts v2.1.21 Released! :dart:
+# :dart: Tools for Autodarts v2.1.23 Released! :dart:
 
 ### :new: New Features
-- **Enhanced WLED Triggers**: Added new trigger support for match/gameshot with throw name specificity
-  - New `matchshot+[throwName]` trigger (e.g., `matchshot+bull`, `matchshot+d20`) - triggers when winning the entire match with a specific throw
-  - New `gameshot+[throwName]` trigger (e.g., `gameshot+d10`, `gameshot+t20`) - triggers when winning a game/leg with a specific throw
-  - Enables more precise lighting control for winning throws with specific dart segments
+- **Bulk Upload & Trigger Assignment**: Added ability to assign the same trigger to multiple uploaded files in Caller, Sound FX, and Animations settings
+  - Bulk trigger assignment when filename-based trigger generation is disabled
+  - Improved efficiency with prioritized bulk trigger assignments
+- **Zoom Visibility Control**: Added dynamic visibility control for zoom center element based on game state
+  - Conditionally displays zoom based on game winner and checkout availability
 
-### :bug: Bug Fixes
-- **Firefox Compatibility**: Fixed WLED effect fetching issue in Firefox browsers
-  - Added CORS handling to ensure WLED effects work correctly in Firefox
+### :sparkles: Enhancements
+- **Sound Trigger Matching**: Enhanced sound trigger matching logic to support range triggers
+  - Added validation for direct matches and range checks based on numeric trigger values
+  - Improved readability and maintainability
+
+### :wrench: Improvements
+- **WLED Effect Fetching**: Refactored WLED effect fetching to be non-blocking
+  - Implemented fire-and-forget approach with 5-second timeout
+  - Better error handling to prevent interference with game state
 
 Please report any bugs in
 :flag_de: https://discord.com/channels/802528604067201055/1255293632110530612/1255293632110530612

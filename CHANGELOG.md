@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.23] - 2025-11-19
+
+### Added
+- Added bulk upload and trigger assignment feature for sound and animation files
+  - Introduced the ability to assign the same trigger to multiple uploaded files in the Caller, Sound FX, and Animations settings
+  - Enhanced the user interface to allow bulk trigger assignment when the option to generate triggers from filenames is disabled
+  - Updated the processing logic to prioritize bulk trigger assignments over filename-based triggers for improved efficiency
+- Added zoom center element visibility control based on game state
+  - Introduced conditional display logic for zoom center element based on game winner and checkout availability
+  - Implemented dynamic visibility management to show or hide zoom center element based on computed game state
+
+### Enhanced
+- Enhanced sound trigger matching logic in caller.ts
+  - Updated the sound filtering logic to include support for range triggers
+  - Added validation for direct matches and range checks based on numeric trigger values
+  - Improved readability and maintainability of the sound matching process
+
+### Changed
+- Refactored WLED effect fetching to be non-blocking and add error handling
+  - Implemented a fire-and-forget approach for fetching WLED effects using setTimeout
+  - Introduced an AbortController with a 5-second timeout to manage fetch requests
+  - Silently ignore non-critical errors to prevent interference with game state while logging abort errors
+
+## [2.1.22] - 2025-11-18
+
+### Enhanced
+- Enhanced sound effects for specific throws
+  - Added logic to handle special case for throw name "25" when the throw bed is "Single", allowing for a distinct sound trigger "s25"
+  - Updated sound playback logic in both caller.ts and sound-fx.ts to incorporate the new sound handling for enhanced gameplay experience
+
 ## [2.1.21] - 2025-10-30
 
 ### Added

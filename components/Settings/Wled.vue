@@ -240,6 +240,9 @@
           <div v-if="urlError" class="mt-1 text-sm text-red-500">
             {{ urlError }}
           </div>
+          <div v-else-if="newEffect.url.startsWith('http://')" class="mt-1 text-sm text-amber-400">
+            Warning: Using HTTP URLs might cause mixed content issues.
+          </div>
         </div>
 
         <hr class="border-white/20">
@@ -497,8 +500,8 @@ function parseCSV(csv: string): IWled[] {
     const url = values.shift()!;
     const triggers: string[] = values;
 
-    if (!url.startsWith("https://")) {
-      csvError.value = `Line "${line}": URL must start with https:// for security reasons`;
+    if (!url.startsWith("https://") && !url.startsWith("http://")) {
+      csvError.value = `Line "${line}": URL must start with http:// or https://`;
       return [];
     }
 
@@ -578,8 +581,8 @@ async function saveEffect() {
     return;
   }
 
-  if (!newEffect.value.url.startsWith("https://")) {
-    urlError.value = "URL must start with https:// for security reasons";
+  if (!newEffect.value.url.startsWith("https://") && !newEffect.value.url.startsWith("http://")) {
+    urlError.value = "URL must start with http:// or https://";
     return;
   }
 
