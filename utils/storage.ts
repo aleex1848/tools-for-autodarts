@@ -668,8 +668,8 @@ export const defaultConfig: IConfig = {
     url: "",
     token: "",
     payloadTypes: {
-      match: true,
-      throws: true,
+      match: false,
+      throws: false,
     },
   },
   wledFx: {
