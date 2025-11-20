@@ -76,6 +76,7 @@ const gameData = ref<IGameData | null>(null);
 const zoomDiv1 = ref<HTMLElement | null>(null);
 const zoomDiv2 = ref<HTMLElement | null>(null);
 const zoomDiv3 = ref<HTMLElement | null>(null);
+const zoomCenterElement = ref<HTMLElement | null>(null);
 
 const config = ref<any>(null);
 
@@ -101,8 +102,13 @@ const isCheckoutAvailable = computed(() => {
 const shouldShowZoom = computed(() => {
   if (!config.value?.zoom) return true;
 
+  // Check if there's a winner (game or match)
+  const hasWinner = (gameData.value?.match?.gameWinner !== undefined && gameData.value.match.gameWinner >= 0)
+    || (gameData.value?.match?.winner !== undefined && gameData.value.match.winner >= 0);
+
   // Check if onlyOnCheckout is enabled and no checkout is available
-  if (config.value.zoom.onlyOnCheckout && !isCheckoutAvailable.value) {
+  // But still show zoom if there's a winner
+  if (config.value.zoom.onlyOnCheckout && !isCheckoutAvailable.value && !hasWinner) {
     return false;
   }
 
@@ -385,6 +391,7 @@ async function initCenterZoom() {
     // Create a duplicate of the turn element
     const duplicateElement = turnElement.cloneNode(true) as HTMLElement;
     duplicateElement.id = "autodarts-tools-zoom-center";
+    zoomCenterElement.value = duplicateElement;
 
     // Set opacity of the first div to 0
     const firstDiv = duplicateElement.querySelector("div");
@@ -425,6 +432,9 @@ async function initCenterZoom() {
       turnElement.parentNode.insertBefore(duplicateElement, turnElement.nextSibling);
     }
 
+    // Set initial visibility based on shouldShowZoom
+    duplicateElement.style.display = shouldShowZoom.value ? "" : "none";
+
     // Update leftPosition based on the original element's position
     const rect = turnElement.getBoundingClientRect();
     leftPosition.value = rect.left;
@@ -446,6 +456,13 @@ watch(() => position.value, (newPosition) => {
     updateZoomDivs();
   }
 });
+
+// Watch for changes to shouldShowZoom to hide/show the center zoom element
+watch(() => shouldShowZoom.value, (shouldShow) => {
+  if (position.value === "center" && zoomCenterElement.value) {
+    zoomCenterElement.value.style.display = shouldShow ? "" : "none";
+  }
+}, { immediate: true });
 </script>
 
 <style>

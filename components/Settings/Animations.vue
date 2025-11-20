@@ -292,19 +292,41 @@
             </div>
           </div>
         </div>
-        <div class="mt-4 flex items-center">
-          <label class="flex cursor-pointer items-center">
-            <input
-              v-model="generateTriggersFromFilenamesGif"
-              type="checkbox"
-              class="form-checkbox size-4 rounded text-blue-600 focus:ring-blue-500"
-            >
-            <span class="ml-2 text-sm">Generate triggers from filenames</span>
-          </label>
-          <span
-            class="icon-[pixelarticons--info-box] ml-2 cursor-help text-white/50"
-            title="If enabled, triggers will be automatically generated from filenames. For example, a file named '180.gif' will trigger on '180' scores."
-          />
+        <div class="mt-4 space-y-3">
+          <div class="flex items-center">
+            <label class="flex cursor-pointer items-center">
+              <input
+                v-model="generateTriggersFromFilenamesGif"
+                type="checkbox"
+                class="form-checkbox size-4 rounded text-blue-600 focus:ring-blue-500"
+              >
+              <span class="ml-2 text-sm">Generate triggers from filenames</span>
+            </label>
+            <span
+              class="icon-[pixelarticons--info-box] ml-2 cursor-help text-white/50"
+              title="If enabled, triggers will be automatically generated from filenames. For example, a file named '180.gif' will trigger on '180' scores."
+            />
+          </div>
+          <div v-if="!generateTriggersFromFilenamesGif">
+            <label for="bulk-trigger-gif" class="mb-1 block text-sm font-medium text-white">
+              Assign same trigger to all files (optional)
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-3 flex items-center text-white/60">
+                <span class="icon-[pixelarticons--edit]" />
+              </span>
+              <AppInput
+                id="bulk-trigger-gif"
+                v-model="bulkTriggerGif"
+                type="text"
+                placeholder="e.g., t20, 180, gameshot"
+                class="pl-9"
+              />
+            </div>
+            <p class="mt-1 text-xs text-white/60">
+              If provided, all uploaded files will be assigned this trigger.
+            </p>
+          </div>
         </div>
       </div>
       <template #footer>
@@ -390,7 +412,7 @@
 <script setup lang="ts">
 import { useStorage } from "@vueuse/core";
 import Sortable from "sortablejs";
-import { nextTick, onMounted, ref, toRaw, watch } from "vue";
+import { computed, nextTick, onMounted, ref, toRaw, watch } from "vue";
 
 import AppButton from "../AppButton.vue";
 import AppInput from "../AppInput.vue";
@@ -435,6 +457,7 @@ const selectedGifFiles = ref<File[]>([]);
 const isGifDragging = ref(false);
 const isGifProcessing = ref(false);
 const generateTriggersFromFilenamesGif = ref(true);
+const bulkTriggerGif = ref("");
 
 // Delete All Modal state
 const showDeleteAllModal = ref(false);
@@ -791,6 +814,7 @@ async function toggleFeature() {
 function openGifUploadModal() {
   showGifUploadModal.value = true;
   selectedGifFiles.value = [];
+  bulkTriggerGif.value = "";
 }
 
 function closeGifUploadModal() {
@@ -861,9 +885,18 @@ async function processGifFiles() {
     for (const file of selectedGifFiles.value) {
       try {
         const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf("."));
-        const triggers = generateTriggersFromFilenamesGif.value
-          ? extractTriggersFromGifFilename(file.name)
-          : [];
+        
+        // Generate triggers - bulk trigger takes precedence
+        let triggers: string[] = [];
+        if (bulkTriggerGif.value.trim()) {
+          // Use bulk trigger if provided, validate it
+          const bulkTriggerLower = bulkTriggerGif.value.trim().toLowerCase();
+          const { validTriggers } = validateAnimationTriggers([ bulkTriggerLower ]);
+          triggers = validTriggers;
+        } else if (generateTriggersFromFilenamesGif.value) {
+          // Otherwise use filename-based triggers if enabled
+          triggers = extractTriggersFromGifFilename(file.name);
+        }
 
         // Create the animation object
         const animation: IAnimation = {

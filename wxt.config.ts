@@ -29,6 +29,7 @@ export default defineConfig({
       "*://darts-downloads.peschi.org/*",
       "*://autodarts.x10.mx/*",
       "*://adt-socket.tobias-thiele.de/*",
+      "*://adt-proxy.tobias-thiele.de/*",
       "*://discord.com/api/webhooks/*",
       "*://*.localhost.test/api/*",
       "https://ads.aleex.de/api/*"

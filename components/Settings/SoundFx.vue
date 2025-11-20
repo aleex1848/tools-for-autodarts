@@ -254,19 +254,41 @@
           </div>
         </div>
 
-        <div class="mt-4 flex items-center">
-          <label class="flex cursor-pointer items-center">
-            <input
-              v-model="generateTriggersFromFilenames"
-              type="checkbox"
-              class="form-checkbox size-4 rounded text-blue-600 focus:ring-blue-500"
-            >
-            <span class="ml-2 text-sm">Generate triggers from filenames</span>
-          </label>
-          <span
-            class="icon-[pixelarticons--info-box] ml-2 cursor-help text-white/50"
-            title="If enabled, triggers will be automatically generated from filenames. For example, a file named '180.mp3' will trigger on '180' scores."
-          />
+        <div class="mt-4 space-y-3">
+          <div class="flex items-center">
+            <label class="flex cursor-pointer items-center">
+              <input
+                v-model="generateTriggersFromFilenames"
+                type="checkbox"
+                class="form-checkbox size-4 rounded text-blue-600 focus:ring-blue-500"
+              >
+              <span class="ml-2 text-sm">Generate triggers from filenames</span>
+            </label>
+            <span
+              class="icon-[pixelarticons--info-box] ml-2 cursor-help text-white/50"
+              title="If enabled, triggers will be automatically generated from filenames. For example, a file named '180.mp3' will trigger on '180' scores."
+            />
+          </div>
+          <div v-if="!generateTriggersFromFilenames">
+            <label for="bulk-trigger" class="mb-1 block text-sm font-medium text-white">
+              Assign same trigger to all files (optional)
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-3 flex items-center text-white/60">
+                <span class="icon-[pixelarticons--edit]" />
+              </span>
+              <AppInput
+                id="bulk-trigger"
+                v-model="bulkTrigger"
+                type="text"
+                placeholder="e.g., t20, 180, gameshot"
+                class="pl-9"
+              />
+            </div>
+            <p class="mt-1 text-xs text-white/60">
+              If provided, all uploaded files will be assigned this trigger.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -406,6 +428,7 @@ const fileInput = ref<HTMLInputElement | null>(null);
 const selectedFiles = ref<File[]>([]);
 const isDragging = ref(false);
 const generateTriggersFromFilenames = ref(true);
+const bulkTrigger = ref("");
 const isProcessing = ref(false);
 
 // Delete all modal
@@ -753,6 +776,7 @@ async function toggleFeature() {
 function openUploadModal() {
   showUploadModal.value = true;
   selectedFiles.value = [];
+  bulkTrigger.value = "";
 }
 
 function closeUploadModal() {
@@ -844,10 +868,15 @@ async function processFiles() {
         // Get filename without extension
         const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf("."));
 
-        // Generate triggers if option is enabled
-        const triggers = generateTriggersFromFilenames.value
-          ? extractTriggerFromFilename(file.name)
-          : [];
+        // Generate triggers - bulk trigger takes precedence
+        let triggers: string[] = [];
+        if (bulkTrigger.value.trim()) {
+          // Use bulk trigger if provided
+          triggers = [ bulkTrigger.value.trim().toLowerCase() ];
+        } else if (generateTriggersFromFilenames.value) {
+          // Otherwise use filename-based triggers if enabled
+          triggers = extractTriggerFromFilename(file.name);
+        }
 
         // Store file in IndexedDB if available
         let soundId: string | null = null;

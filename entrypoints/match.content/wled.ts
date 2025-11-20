@@ -225,7 +225,7 @@ function isTriggerPresent(trigger: string): boolean {
   );
   for (let i = 0; i < range_triggers.length; i++) {
     const element = range_triggers[i];
-    for (let j = 0; j < range_triggers.length; j++) {
+    for (let j = 0; j < element.triggers.length; j++) {
       const parts = element.triggers[j].match(triggerPatterns.ranges);
       if (!parts) continue;
       const min = Number(parts[1]);
@@ -290,10 +290,32 @@ export function setEffect(effect: IWled) {
   if (effect !== currentEffect && effect.url) {
     currentEffect = effect;
     console.info("Autodarts Tools: WLED: fetching", effect.url);
-    fetch(effect.url, {
-      mode: 'no-cors',
-      method: 'GET'
-    }).catch((e) => { console.log("Autodarts Tools: WLED:", e); });
+
+    // Use setTimeout to ensure the fetch doesn't block or interfere with page state
+    // This makes it truly fire-and-forget
+    setTimeout(() => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      fetch(effect.url, {
+        mode: "no-cors",
+        method: "GET",
+        signal: controller.signal,
+        cache: "no-cache",
+        credentials: "omit",
+      })
+        .then(() => {
+          clearTimeout(timeoutId);
+          // Success - no need to do anything with no-cors response
+        })
+        .catch((e) => {
+          clearTimeout(timeoutId);
+          // Silently ignore errors to prevent interfering with game state
+          if (e.name !== "AbortError") {
+            console.log("Autodarts Tools: WLED: Request failed (non-critical)", e);
+          }
+        });
+    }, 0);
   } else {
     console.info("Autodarts Tools: WLED: didn't fetch", effect.url, "because the effect is already active");
   }
