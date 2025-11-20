@@ -225,7 +225,7 @@ function isTriggerPresent(trigger: string): boolean {
   );
   for (let i = 0; i < range_triggers.length; i++) {
     const element = range_triggers[i];
-    for (let j = 0; j < range_triggers.length; j++) {
+    for (let j = 0; j < element.triggers.length; j++) {
       const parts = element.triggers[j].match(triggerPatterns.ranges);
       if (!parts) continue;
       const min = Number(parts[1]);
