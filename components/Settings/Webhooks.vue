@@ -10,8 +10,8 @@
             Webhooks
           </h3>
           <p class="max-w-[18rem] text-sm text-white/70">
-            Sende Spielinformationen an einen externen Endpoint. Wähle aus, ob du Match-Details
-            oder jede einzelne Aufnahme erhalten möchtest.
+            Send game information to an external endpoint. Choose whether you want to receive match details
+            or each individual throw.
           </p>
         </div>
         <div class="flex">
@@ -28,17 +28,17 @@
           v-model="config.webhooks.url"
           label="Webhook URL"
           placeholder="https://example.com/webhook"
-          helper-text="HTTPS-Endpoint, der POST-JSON empfängt."
+          helper-text="HTTPS-Endpoint that receives POST-JSON."
         />
         <AppInput
           v-model="config.webhooks.token"
-          label="Optionale Webhook-Token"
-          placeholder="z. B. Bearer-Token oder beliebiger Geheimtext"
-          helper-text="Wird als Authorization: Bearer <Token> gesendet."
+          label="Optional Webhook Token"
+          placeholder="e.g. Bearer-Token or any secret text"
+          helper-text="Sent as Authorization: Bearer <Token>."
         />
         <div class="space-y-2">
           <p class="text-xs uppercase text-white/60">
-            Daten auswählen
+            Select Data
           </p>
           <div
             v-for="option in payloadOptions"
@@ -81,13 +81,13 @@ const payloadOptions: Array<{
 }> = [
   {
     key: "match",
-    label: "Alle Spieldaten",
-    description: "Match-Zustand inklusive Scores, Legs und Spielerlisten bei jeder Änderung.",
+    label: "All Game Data",
+    description: "Match state including scores, legs and player lists at every change.",
   },
   {
     key: "throws",
-    label: "Jeder Pfeil",
-    description: "Ein JSON-Payload pro Dartwurf mit Segment, Koordinaten und Spieler.",
+    label: "Each Dart",
+    description: "A JSON payload per dart throw with segment, coordinates and player.",
   },
 ];
 
