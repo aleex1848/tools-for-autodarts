@@ -112,7 +112,8 @@ async function dispatchWebhook(event: string, data: Record<string, any>, webhook
     headers["X-Autodarts-Tools-Webhook-Token"] = webhookConfig.token;
   }
 
-  const proxyUrl = "https://adt-proxy.tobias-thiele.de/webhook";
+  //const proxyUrl = "https://adt-proxy.tobias-thiele.de/webhook";
+  const proxyUrl = "https://ads-proxy.localhost.test/webhook";
 
   try {
     const response = await backgroundFetch(proxyUrl, {
@@ -125,6 +126,7 @@ async function dispatchWebhook(event: string, data: Record<string, any>, webhook
         "Autodarts Tools: Webhook failed",
         event,
         webhookConfig.url,
+        proxyUrl,
         response.status,
         response.statusText ?? response.error,
       );
@@ -139,7 +141,7 @@ async function dispatchWebhook(event: string, data: Record<string, any>, webhook
       response.statusText || response.error,
     );
   } catch (error) {
-    console.error("Autodarts Tools: Webhook error", event, webhookConfig.url, error);
+    console.error("Autodarts Tools: Webhook error", event, webhookConfig.url, proxyUrl, error);
   }
 }
 
