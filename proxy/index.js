@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const https = require('https');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -30,7 +31,10 @@ app.post('/webhook', async (req, res) => {
         ...(req.headers.authorization && { 'Authorization': req.headers.authorization }),
         // Forwarding User-Agent or other headers might be useful but risking CORS or other issues.
         // For now keeping it simple.
-      }
+      },
+      httpsAgent: new https.Agent({
+        rejectUnauthorized: false
+      })
     });
 
     console.log(`Forwarded successfully. Status: ${response.status}`);
